@@ -1,13 +1,17 @@
 
 services:
   app:
+    container_name: gira-api
     image: node:18-alpine
     command: npm run start:dev
     ports:
       - 127.0.0.1:3000:3000
     working_dir: /app
+    depends_on:
+      - postgres
     volumes:
       - ./:/app
+
   postgres:
     container_name: gira-postgres
     image: postgres:alpine
@@ -17,9 +21,13 @@ services:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_DATABASE}
-    ports:
-      - "5432:5432"
+      - POSTGRES_PORT=${DB_PORT}
+    expose:
+      - "${DB_PORT}"
     restart: always
+    command: -p ${DB_PORT}
+
+
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4:latest
@@ -28,6 +36,9 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
     ports:
       - "5050:80"
+    depends_on:
+      - postgres
     restart: always
+
 volumes:
   gira-postgres-data:

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums, ProjectCategory } from '@prisma/client';
+import { ProjectCategory } from '@prisma/client';
 import {
   IsEnum,
   IsNotEmpty,
@@ -27,5 +27,5 @@ export class CreateProjectDto {
   @IsNotEmpty()
   @IsEnum(ProjectCategory)
   @ApiProperty()
-  category: $Enums.ProjectCategory;
+  category: ProjectCategory;
 }

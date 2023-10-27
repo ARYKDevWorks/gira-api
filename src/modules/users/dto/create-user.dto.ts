@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
-  IsUrl,
   MaxLength,
 } from 'class-validator';
 
@@ -20,7 +19,6 @@ export class CreateUserDto {
   @ApiProperty()
   email: string;
 
-  @IsUrl()
   @ApiProperty({ required: false })
   avatarUrl?: string;
 

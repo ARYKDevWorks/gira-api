@@ -1,7 +1,6 @@
-import { $Enums, Issue, IssueType } from '@prisma/client';
+import { Issue, IssuePriority, IssueStatus, IssueType } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../../users/entities/user.entity';
-import { CommentEntity } from '../../comments/entities/comment.entity';
 
 export class IssueEntity implements Issue {
   constructor({ user, ...data }: Partial<IssueEntity>) {
@@ -18,13 +17,13 @@ export class IssueEntity implements Issue {
   title: string;
 
   @ApiProperty()
-  type: $Enums.IssueType;
+  type: IssueType;
 
   @ApiProperty()
-  status: $Enums.IssueStatus;
+  status: IssueStatus;
 
   @ApiProperty()
-  priority: $Enums.IssuePriority;
+  priority: IssuePriority;
 
   @ApiProperty()
   listPosition: number;

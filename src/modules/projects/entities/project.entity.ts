@@ -1,4 +1,4 @@
-import { $Enums, Project } from '@prisma/client';
+import { Project, ProjectCategory } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ProjectEntity implements Project {
@@ -15,7 +15,7 @@ export class ProjectEntity implements Project {
   description: string;
 
   @ApiProperty()
-  category: $Enums.ProjectCategory;
+  category: ProjectCategory;
 
   @ApiProperty()
   createdAt: Date;

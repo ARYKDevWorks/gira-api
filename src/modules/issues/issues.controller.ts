@@ -11,9 +11,10 @@ import { IssuesService } from './issues.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
 import { IssueEntity } from './entities/issue.entity';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('issues')
+@ApiTags('issues')
 export class IssuesController {
   constructor(private readonly issuesService: IssuesService) {}
 

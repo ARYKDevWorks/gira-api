@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums, IssuePriority, IssueStatus, IssueType } from '@prisma/client';
+import { IssuePriority, IssueStatus, IssueType } from '@prisma/client';
 import {
   IsEnum,
   IsNotEmpty,
@@ -18,17 +18,17 @@ export class CreateIssueDto {
   @IsNotEmpty()
   @IsEnum(IssueType)
   @ApiProperty()
-  type: $Enums.IssueType;
+  type: IssueType;
 
   @IsNotEmpty()
   @IsEnum(IssueStatus)
   @ApiProperty()
-  status: $Enums.IssueStatus;
+  status: IssueStatus;
 
   @IsNotEmpty()
   @IsEnum(IssuePriority)
   @ApiProperty()
-  priority: $Enums.IssuePriority;
+  priority: IssuePriority;
 
   @IsNotEmpty()
   @IsNumber()
