@@ -1,28 +1,25 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { config, schema } from './config/postgresConfig';
-import { PrismaModule } from './modules/prisma/prisma.module';
-import { UsersModule } from './modules/users/users.module';
-import { ProjectsModule } from './modules/projects/projects.module';
-import { IssuesModule } from './modules/issues/issues.module';
-import { CommentsModule } from './modules/comments/comments.module';
+import { CrudConfig, CrudSchema } from './config/crud.config';
+import { UsersModule } from './modules/crud/users/users.module';
+import { ProjectsModule } from './modules/crud/projects/projects.module';
+import { IssuesModule } from './modules/crud/issues/issues.module';
+import { CommentsModule } from './modules/crud/comments/comments.module';
+import { CrudModule } from './modules/crud/crud.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [config],
-      validationSchema: schema,
+      load: [CrudConfig],
+      validationSchema: CrudSchema,
       expandVariables: true,
+      isGlobal: true,
     }),
-    PrismaModule,
+    CrudModule,
     UsersModule,
     ProjectsModule,
     IssuesModule,
     CommentsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
