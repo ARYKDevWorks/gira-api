@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { Global, Module } from '@nestjs/common';
 
-const CrudService = {
+const CrudConnection = {
   provide: 'CRUD_SERVICE',
   inject: [ConfigService],
   useFactory: (configService: ConfigService) => {
@@ -18,7 +18,7 @@ const CrudService = {
 
 @Global()
 @Module({
-  providers: [CrudService],
-  exports: [CrudService],
+  providers: [CrudConnection],
+  exports: [CrudConnection],
 })
 export class CrudModule {}
