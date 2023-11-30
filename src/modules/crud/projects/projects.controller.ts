@@ -23,7 +23,7 @@ export class ProjectsController {
   @Post()
   @ApiCreatedResponse({ type: Project })
   create(@Body() createProjectDto: CreateProjectDto) {
-    return this.crudClient.send({ cmd: 'createProject' }, { createProjectDto });
+    return this.crudClient.send({ cmd: 'createProject' }, createProjectDto);
   }
 
   @Get()
@@ -35,7 +35,7 @@ export class ProjectsController {
   @Get(':id')
   @ApiOkResponse({ type: Project })
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.crudClient.send({ cmd: 'findProject' }, { id: id });
+    return this.crudClient.send({ cmd: 'findProject' }, id);
   }
 
   @Patch(':id')
@@ -46,13 +46,13 @@ export class ProjectsController {
   ) {
     return this.crudClient.send(
       { cmd: 'editProject' },
-      { id: id, updateProjectDto },
+      { id, updateProjectDto },
     );
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: Project })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.crudClient.send({ cmd: 'deleteProject' }, { id: id });
+    return this.crudClient.send({ cmd: 'deleteProject' }, id);
   }
 }

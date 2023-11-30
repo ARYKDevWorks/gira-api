@@ -9,7 +9,6 @@ import {
   Inject,
   ParseIntPipe,
 } from '@nestjs/common';
-import { CreateIssueDto } from './dto/create-issue.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
 import { Issue } from './entities/issue.entity';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -22,23 +21,20 @@ export class IssuesController {
 
   @Post()
   @ApiCreatedResponse({ type: Issue })
-  async create(@Body() createIssueDto: CreateIssueDto) {
-    return this.crudClient.send({ cmd: 'createIssue' }, { createIssueDto });
+  async create(@Body() createIssueDto: any) {
+    return this.crudClient.send({ cmd: 'createIssue' }, createIssueDto);
   }
 
   @Get('/view/:issueId')
   @ApiOkResponse({ type: Issue })
   async findOne(@Param('issueId', ParseIntPipe) issueId: number) {
-    return this.crudClient.send({ cmd: 'findIssue' }, { issueId: issueId });
+    return this.crudClient.send({ cmd: 'findIssue' }, issueId);
   }
 
   @Get(':projectId')
   @ApiOkResponse({ type: Issue, isArray: true })
   async findByProject(@Param('projectId', ParseIntPipe) projectId: number) {
-    return this.crudClient.send(
-      { cmd: 'findProjectIssues' },
-      { projectId: projectId },
-    );
+    return this.crudClient.send({ cmd: 'findProjectIssues' }, projectId);
   }
 
   @Patch(':id')
@@ -47,15 +43,12 @@ export class IssuesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateIssueDto: UpdateIssueDto,
   ) {
-    return this.crudClient.send(
-      { cmd: 'editIssue' },
-      { id: id, updateIssueDto },
-    );
+    return this.crudClient.send({ cmd: 'editIssue' }, { id, updateIssueDto });
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: Issue })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.crudClient.send({ cmd: 'deleteIssue' }, { id: id });
+    return this.crudClient.send({ cmd: 'deleteIssue' }, id);
   }
 }

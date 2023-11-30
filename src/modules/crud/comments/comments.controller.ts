@@ -9,7 +9,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Comment } from './entities/comment.entity';
@@ -21,8 +20,8 @@ export class CommentsController {
 
   @Post()
   @ApiCreatedResponse({ type: Comment })
-  async create(@Body() createCommentDto: CreateCommentDto) {
-    return this.crudClient.send({ cmd: 'createComment' }, { createCommentDto });
+  async create(@Body() createCommentDto: any) {
+    return this.crudClient.send({ cmd: 'createComment' }, createCommentDto);
   }
 
   @Patch(':id')
@@ -33,13 +32,13 @@ export class CommentsController {
   ) {
     return this.crudClient.send(
       { cmd: 'editComment' },
-      { id: id, updateCommentDto },
+      { id, updateCommentDto },
     );
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: Comment })
   async remove(@Param('id', ParseIntPipe) id: number) {
-    return this.crudClient.send({ cmd: 'deleteComment' }, { id: id });
+    return this.crudClient.send({ cmd: 'deleteComment' }, id);
   }
 }

@@ -1,5 +1,5 @@
 export enum ProjectCategory {
-  SOFTWARE = 'software',
-  MARKETING = 'marketing',
-  BUSINESS = 'business',
+  SOFTWARE = 'SOFTWARE',
+  MARKETING = 'MARKETING',
+  BUSINESS = 'BUSINESS',
 }

@@ -1,14 +1,14 @@
 export enum IssueType {
-  TASK = 'task',
-  BUG = 'bug',
-  STORY = 'story',
+  TASK = 'TASK',
+  BUG = 'BUG',
+  STORY = 'STORY',
 }
 
 export enum IssueStatus {
-  BACKLOG = 'backlog',
-  SELECTED = 'selected',
-  INPROGRESS = 'inprogress',
-  DONE = 'done',
+  BACKLOG = 'BACKLOG',
+  SELECTED = 'SELECTED',
+  INPROGRESS = 'INPROGRESS',
+  DONE = 'DONE',
 }
 
 export enum IssuePriority {
