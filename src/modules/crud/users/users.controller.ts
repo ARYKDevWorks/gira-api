@@ -8,14 +8,15 @@ import {
   Delete,
   Inject,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { ClientProxy } from '@nestjs/microservices';
-import { EmailDto } from './dto/email.dto';
 import { firstValueFrom } from 'rxjs';
+import validator from 'validator';
 
 @Controller('users')
 @ApiTags('users')
@@ -38,16 +39,22 @@ export class UsersController {
 
   @Get(':email')
   @ApiOkResponse({ type: User })
-  findOne(@Param('email') email: EmailDto) {
-    return this.crudClient.send({ cmd: 'findUser' }, email.email);
+  findOne(@Param('email') email: string) {
+    if (!validator.isEmail(email)) {
+      throw new BadRequestException('Invalid Email format');
+    }
+    return this.crudClient.send({ cmd: 'findUser' }, email);
   }
 
   @Patch(':email')
   @ApiCreatedResponse({ type: User })
   async update(
-    @Param('email') email: EmailDto,
+    @Param('email') email: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
+    if (!validator.isEmail(email)) {
+      throw new BadRequestException('Invalid Email format');
+    }
     const updatedUser = await firstValueFrom(
       this.crudClient.send({ cmd: 'editUser' }, { email, updateUserDto }),
     );
@@ -59,7 +66,10 @@ export class UsersController {
 
   @Delete(':email')
   @ApiOkResponse({ type: User })
-  async remove(@Param('email') email: EmailDto) {
+  async remove(@Param('email') email: string) {
+    if (!validator.isEmail(email)) {
+      throw new BadRequestException('Invalid Email format');
+    }
     const deletedUser = await firstValueFrom(
       this.crudClient.send({ cmd: 'deleteUser' }, email),
     );

@@ -4,12 +4,11 @@ import { createMock, DeepMocked } from '@golevelup/ts-jest';
 import { ClientProxy } from '@nestjs/microservices';
 import { User } from './entities/user.entity';
 import { faker } from '@faker-js/faker/locale/en';
-import { EmailDto } from './dto/email.dto';
 import { validate } from 'class-validator';
 import { firstValueFrom, of } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('Users Controller', () => {
   let controller: UsersController;
@@ -109,10 +108,10 @@ describe('Users Controller', () => {
     const userByEmail: User = user();
 
     it('should throw a error if the input is not in a valid email format', async () => {
-      const invalidUserEmail: EmailDto = new EmailDto();
-      invalidUserEmail.email = 'invalid_email';
-      const invalidEmailErrors = validate(invalidUserEmail);
-      await expect(invalidEmailErrors).resolves.not.toBe([]);
+      const invalidUserEmail: string = 'invalid_email';
+      await expect(controller.remove(invalidUserEmail)).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
     });
 
     it('should send a request with the email address', async () => {
@@ -120,7 +119,7 @@ describe('Users Controller', () => {
         of(userByEmail),
       );
 
-      controller.findOne({ email: userByEmail.email });
+      controller.findOne(userByEmail.email);
       expect(mockCrudService.mock.calls[0][0].cmd).toBe('findUser');
       expect(mockCrudService.mock.calls[0][1]).toBe(userByEmail.email);
     });
@@ -129,19 +128,18 @@ describe('Users Controller', () => {
       crudService.send.mockReturnValueOnce(of(userByEmail));
 
       const fetchedUser = await firstValueFrom(
-        controller.findOne({ email: userByEmail.email }),
+        controller.findOne(userByEmail.email),
       );
       expect(fetchedUser).toBeInstanceOf(User);
       expect(fetchedUser).toBe(userByEmail);
     });
 
     it('should fetch no users if email not found', async () => {
-      const nonExistentUserEmail: EmailDto = new EmailDto();
-      nonExistentUserEmail.email = 'unknown@mail.com';
+      const nonExistentUserEmail: string = 'unknown@mail.com';
       crudService.send.mockReturnValueOnce(of([]));
 
       const fetchedUser = await firstValueFrom(
-        controller.findOne({ email: userByEmail.email }),
+        controller.findOne(nonExistentUserEmail),
       );
       expect(fetchedUser).toStrictEqual([]);
     });
@@ -149,10 +147,7 @@ describe('Users Controller', () => {
 
   describe('Edit a user', () => {
     const userToBeEdited: User = user();
-    const userEmail: EmailDto = {
-      ...new EmailDto(),
-      email: userToBeEdited.email,
-    };
+    const userEmail: string = userToBeEdited.email;
     const editedDetails: UpdateUserDto = {
       email: faker.internet.email(),
       avatarUrl: faker.internet.url(),
@@ -184,8 +179,7 @@ describe('Users Controller', () => {
     });
 
     it('should throw an error if the user with the given email is not found', async () => {
-      const nonExistentUserEmail: EmailDto = new EmailDto();
-      nonExistentUserEmail.email = 'unknown@mail.com';
+      const nonExistentUserEmail: string = 'unknown@mail.com';
       crudService.send.mockReturnValueOnce(of(0));
 
       await expect(
@@ -206,16 +200,13 @@ describe('Users Controller', () => {
 
   describe('Delete a user', () => {
     const userToBeDeleted: User = user();
-    const userEmail: EmailDto = {
-      ...new EmailDto(),
-      email: userToBeDeleted.email,
-    };
+    const userEmail: string = userToBeDeleted.email;
 
     it('should throw a error if the input is not in a valid email format', async () => {
-      const invalidUserEmail: EmailDto = new EmailDto();
-      invalidUserEmail.email = 'invalid_email';
-      const invalidEmailErrors = validate(invalidUserEmail);
-      await expect(invalidEmailErrors).resolves.not.toBe([]);
+      const invalidUserEmail: string = 'invalid_email';
+      await expect(controller.remove(invalidUserEmail)).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
     });
 
     it('should send a request with the email of the user to be deleted', async () => {
@@ -229,8 +220,7 @@ describe('Users Controller', () => {
     });
 
     it('should throw an error if the user with the given email is not found', async () => {
-      const nonExistentUserEmail: EmailDto = new EmailDto();
-      nonExistentUserEmail.email = 'unknown@mail.com';
+      const nonExistentUserEmail: string = 'unknown@mail.com';
       crudService.send.mockReturnValueOnce(of(0));
 
       await expect(controller.remove(nonExistentUserEmail)).rejects.toThrow(
