@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Inject,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -12,6 +13,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Comment } from './entities/comment.entity';
+import { firstValueFrom } from 'rxjs';
 
 @Controller('comments')
 @ApiTags('comments')
@@ -30,15 +32,24 @@ export class CommentsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCommentDto: UpdateCommentDto,
   ) {
-    return this.crudClient.send(
-      { cmd: 'editComment' },
-      { id, updateCommentDto },
+    const updatedComment = await firstValueFrom(
+      this.crudClient.send({ cmd: 'editComment' }, { id, updateCommentDto }),
     );
+    if (updatedComment === 0) {
+      throw new NotFoundException('Issue not found to delete');
+    }
+    return updatedComment;
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: Comment })
   async remove(@Param('id', ParseIntPipe) id: number) {
-    return this.crudClient.send({ cmd: 'deleteComment' }, id);
+    const deletedComment = await firstValueFrom(
+      this.crudClient.send({ cmd: 'deleteComment' }, id),
+    );
+    if (deletedComment === 0) {
+      throw new NotFoundException('Issue not found to delete');
+    }
+    return deletedComment;
   }
 }
