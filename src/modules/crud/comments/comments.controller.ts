@@ -14,6 +14,7 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Comment } from './entities/comment.entity';
 import { firstValueFrom } from 'rxjs';
+import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Controller('comments')
 @ApiTags('comments')
@@ -22,7 +23,7 @@ export class CommentsController {
 
   @Post()
   @ApiCreatedResponse({ type: Comment })
-  async create(@Body() createCommentDto: any) {
+  async create(@Body() createCommentDto: CreateCommentDto) {
     return this.crudClient.send({ cmd: 'createComment' }, createCommentDto);
   }
 
