@@ -2,6 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ProjectCategory } from './project.enum';
 
 export class Project {
+  constructor(partial: Partial<Project>) {
+    Object.assign(this, partial);
+  }
   @ApiProperty()
   id: number;
 

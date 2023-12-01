@@ -87,6 +87,14 @@ describe('Users Controller', () => {
   });
 
   describe('Get all users', () => {
+    it('should send a request to the correct CRUD service with no parameters', async () => {
+      const mockCrudService = crudService.send.mockReturnValueOnce(of(''));
+
+      controller.findAll();
+      expect(mockCrudService.mock.calls[0][0].cmd).toBe('allUsers');
+      expect(mockCrudService.mock.calls[0][1]).toStrictEqual({});
+    });
+
     it('should fetch all users from the CRUD microservice', async () => {
       const userList = new Array(5).fill(null).map(() => user());
       const mockCrudService = crudService.send.mockReturnValueOnce(

@@ -24,7 +24,7 @@ export class ProjectsController {
 
   @Post()
   @ApiCreatedResponse({ type: Project })
-  create(@Body() createProjectDto: CreateProjectDto) {
+  async create(@Body() createProjectDto: CreateProjectDto) {
     return this.crudClient.send({ cmd: 'createProject' }, createProjectDto);
   }
 
