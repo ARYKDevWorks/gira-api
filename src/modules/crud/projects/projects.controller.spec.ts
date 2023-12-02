@@ -175,7 +175,7 @@ describe('Projects Controller', () => {
       expect(request.updateProjectDto).toBe(editedDetails);
     });
 
-    it('should throw an error if the user with the given project ID is not found', async () => {
+    it('should throw an error if the project with the given ID is not found', async () => {
       const nonExistentProjectId: number = faker.number.int();
       crudService.send.mockReturnValueOnce(of(0));
 

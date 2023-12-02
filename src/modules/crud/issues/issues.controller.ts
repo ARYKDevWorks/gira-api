@@ -36,7 +36,13 @@ export class IssuesController {
   @Get(':projectId')
   @ApiOkResponse({ type: Issue, isArray: true })
   async findByProject(@Param('projectId', ParseIntPipe) projectId: number) {
-    return this.crudClient.send({ cmd: 'findProjectIssues' }, projectId);
+    const issues = await firstValueFrom(
+      this.crudClient.send({ cmd: 'findProjectIssues' }, projectId),
+    );
+    if (issues === 0) {
+      throw new NotFoundException('Project not found');
+    }
+    return issues;
   }
 
   @Patch(':id')
