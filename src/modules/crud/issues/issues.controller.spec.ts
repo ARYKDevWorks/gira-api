@@ -180,7 +180,7 @@ describe('Issues Controller', () => {
     });
   });
 
-  describe('Edit a Issue', () => {
+  describe('Edit an Issue', () => {
     const issueToBeEdited: Issue = issue();
     const issueId: number = issueToBeEdited.id;
     const editedDetails: UpdateIssueDto = {
@@ -236,7 +236,7 @@ describe('Issues Controller', () => {
     });
   });
 
-  describe('Delete a issue', () => {
+  describe('Delete an issue', () => {
     const issueToBeDeleted: Issue = issue();
     const issueId: number = issueToBeDeleted.id;
 
@@ -250,7 +250,7 @@ describe('Issues Controller', () => {
       expect(mockCrudService.mock.calls[0][1]).toBe(issueId);
     });
 
-    it('should throw an error if the project with the given ID is not found', async () => {
+    it('should throw an error if the issue with the given ID is not found', async () => {
       const nonExistentIssueId: number = faker.number.int();
       crudService.send.mockReturnValueOnce(of(0));
 
@@ -259,11 +259,11 @@ describe('Issues Controller', () => {
       );
     });
 
-    it('should fetch the project if deletion is successful', async () => {
+    it('should fetch the issue if deletion is successful', async () => {
       crudService.send.mockReturnValueOnce(of(issueToBeDeleted));
 
-      const fetchedUser: Project = await controller.remove(issueId);
-      expect(fetchedUser).toBe(issueToBeDeleted);
+      const fetchedIssue: Issue = await controller.remove(issueId);
+      expect(fetchedIssue).toBe(issueToBeDeleted);
     });
   });
 });
