@@ -51,6 +51,6 @@ jobs:
       - name: Coverage Report
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          path: '/coverage/lcov.info'
+          path: './coverage/lcov.info'
           min_coverage: 80
           exclude: '**/*.module.ts **/*.config.ts'
