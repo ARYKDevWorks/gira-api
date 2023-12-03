@@ -47,7 +47,7 @@ jobs:
           node-version: lts/*
       - run: npm ci
       - run: npm run build --if-present
-      - run: npm test:cov
+      - run: npm run test:cov
       - name: Coverage Report
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
