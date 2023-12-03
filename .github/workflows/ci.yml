@@ -11,19 +11,46 @@ env:
   CRUD_SERVICE_HOST: ${{ secrets.CRUD_SERVICE_HOST }}
   CRUD_SERVICE_PORT: ${{ secrets.CRUD_SERVICE_PORT }}
 
+permissions:
+  contents: read
+  packages: read
+  statuses: write
+
 jobs:
-  build:
-    strategy:
-      matrix:
-        node-version: [18.x]
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+  lint:
+    name: Run Linter
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Lint Code Base
+        uses: super-linter/super-linter/slim@v5
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  test:
+    name: Run Unit Tests & Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup NodeJS & Run Unit Tests
+        uses: actions/setup-node@v4
         with:
           cache: 'npm'
+          node-version: lts/*
       - run: npm ci
       - run: npm run build --if-present
-      - run: npm test
+      - run: npm test:cov
+      - name: Coverage Report
+        uses: VeryGoodOpenSource/very_good_coverage@v2
+        with:
+          path: '/coverage/lcov.info'
+          min_coverage: 80
+          exclude: '**/*.module.ts **/*.config.ts'
